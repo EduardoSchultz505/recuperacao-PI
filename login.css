@@ -1,0 +1,51 @@
+*{
+    margin: 0;
+}
+
+body{
+    margin-top: 20px;
+    background-color: #FFA94D;
+}
+
+.principal{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.principal p{
+    margin-bottom: 20px;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.logo img{
+    width: 40vh;
+}
+
+.principal p{
+    font-size: 3vh;
+}
+
+.principal button{
+    font-size: 5vh;
+    width: 40vh;
+    margin-top: 50px;
+    color: black;
+}
+
+.btn-custom-orange {
+  background-color: #FF8C00;
+  color: white;
+  border-color: #FF8C00;
+}
+
+.btn-custom-orange:hover {
+  background-color: #FF8C00;
+  border-color: #FFA07A;
+}
