@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Editar Pet - PetCard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h2>Editar Pet</h2>
+
+  <form id="editForm">
+    <input name="nome" placeholder="Nome" required>
+    <input name="idade" placeholder="Idade">
+    <input name="genero" placeholder="Gênero">
+    <input name="raca" placeholder="Raça">
+    <input name="cor" placeholder="Cor">
+    <button type="submit">Salvar alterações</button>
+  </form>
+
+  <script src="script.js"></script>
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get("id");
+
+    async function loadPet() {
+      const res = await fetch(`http://127.0.0.1:5000/pets`);
+      const pets = await res.json();
+      const pet = pets.find(p => p.id == id);
+
+      if (pet) {
+        for (let key in pet) {
+          if (document.querySelector(`[name=${key}]`))
+            document.querySelector(`[name=${key}]`).value = pet[key];
+        }
+      }
+    }
+
+    document.getElementById("editForm").onsubmit = async (e) => {
+      e.preventDefault();
+      const data = Object.fromEntries(new FormData(e.target).entries());
+      await fetch(`http://127.0.0.1:5000/pets/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      });
+      alert("Pet atualizado!");
+      window.location.href = "pet_list.html";
+    };
+
+    loadPet();
+  </script>
+</body>
+</html>

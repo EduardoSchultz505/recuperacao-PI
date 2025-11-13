@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>PetCard - Ver Pet</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>🐾 PetCard</h1>
+  <div id="petInfo"></div>
+
+  <button onclick="window.location.href='pet_list.html'">Voltar</button>
+  <button id="editBtn">Editar</button>
+
+  <script src="script.js"></script>
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get("id");
+
+    async function loadPet() {
+      const res = await fetch("http://127.0.0.1:5000/pets");
+      const pets = await res.json();
+      const pet = pets.find(p => p.id == id);
+
+      if (pet) {
+        document.getElementById("petInfo").innerHTML = `
+          <h2>${pet.nome}</h2>
+          <p><b>Raça:</b> ${pet.raca}</p>
+          <p><b>Gênero:</b> ${pet.genero}</p>
+          <p><b>Idade:</b> ${pet.idade}</p>
+          <p><b>Cor:</b> ${pet.cor}</p>
+        `;
+        document.getElementById("editBtn").onclick = () => {
+          window.location.href = "edit_pet.html?id=" + pet.id;
+        };
+      }
+    }
+
+    loadPet();
+  </script>
+</body>
+</html>
