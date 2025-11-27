@@ -1,19 +1,49 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Seus Animais - PetCard</title>
+  <link rel="stylesheet" href="pet_list.css" />
   <link rel="stylesheet" href="style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 </head>
+
 <body>
-  <h2>Seus animais</h2>
-  <div id="pets"></div>
 
-  <button onclick="window.location.href='add_pet.html'">+ Adicionar Pet</button>
+  <div class="container">
+    <h2>Seus animais</h2>
 
-  <script src="script.js"></script>
+    <ul class="pet-list" id="pet-list">
+    </ul>
+
+    <div class="actions">
+      <button class="action-btn" id="add-pet-btn" title="Adicionar Pet">
+        <span class="icon">＋</span>
+        <span>Adicionar Pet</span>
+      </button>
+    </div>
+  </div>
+
+  <nav class="bottom-nav">
+    <a href="pet_list.html">
+      <i>🐾</i>
+      <span>Pets</span>
+    </a>
+    <a href="add_pet.html">
+      <i>➕</i>
+      <span>Cadastrar</span>
+    </a>
+    <a href="profile.html">
+      <i>👤</i>
+      <span>Perfil</span>
+    </a>
+  </nav>
+
+  <script src="pet_list.js"></script>
   <script>
     loadPets();
   </script>
 </body>
+
 </html>

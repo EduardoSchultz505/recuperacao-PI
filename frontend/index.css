@@ -1,0 +1,39 @@
+body {
+  font-family: sans-serif;
+  background-color: #FFA94D ;
+  text-align: center;
+  color: #3c2c0f;
+}
+
+/* index.html */
+
+.login input, button {
+  display: block;
+  margin: 10px auto;
+  padding: 8px;
+  border: none;
+  border-radius: 5px;
+  width: 30vh;
+  height: 9vh;
+  font-size: 3vh;
+}
+
+.login button {
+  background: #E87C1E;
+  color: #2E2E2E;
+  cursor: pointer;
+  margin-top: 2vh;
+}
+
+.login h3 {
+  font-size: 4vh;
+  color: #2E2E2E;
+}
+
+.login button:last-child {
+  background: #CF6D18;
+}
+
+.login img {
+  height: 30vh;
+}

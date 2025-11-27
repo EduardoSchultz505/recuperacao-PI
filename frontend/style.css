@@ -1,125 +1,52 @@
-body {
-  font-family: sans-serif;
-  background-color: #FFA94D ;
-  text-align: center;
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 55px;
+  background-color: #FFA94D;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 0;
+  box-shadow: 0 -2px 5px rgba(0,0,0,0.2);
+  z-index: 1000;
+}
+
+.bottom-nav a {
+  text-decoration: none;
   color: #3c2c0f;
-}
-
-/* index.html */
-
-.login input, button {
-  display: block;
-  margin: 10px auto;
-  padding: 8px;
-  border: none;
-  border-radius: 5px;
-  width: 30vh;
-  height: 9vh;
-  font-size: 3vh;
-}
-
-.login button {
-  background: #E87C1E;
-  color: #2E2E2E;
-  cursor: pointer;
-  margin-top: 2vh;
-}
-
-.login h3 {
-  font-size: 4vh;
-  color: #2E2E2E;
-}
-
-.login button:last-child {
-  background: #CF6D18;
-}
-
-.login img {
-  height: 30vh;
-}
-
-/* add_pet.html */
-
-.adicionar-pet {
-  width: 40vh;
-  margin: 0 auto;
-  padding: 20px;
-  background: transparent; /* fundo invisível */
-}
-
-.adicionar-pet h3 {
-  text-align: center;
-  color: #2E2E2E;
-  margin-bottom: 3vh;
-  font-size: 4vh;
-}
-
-.adicionar-pet form {
+  font-size: 0.85rem;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  height: 100%;
 }
 
-/* Grupo de input */
-.input-group {
-  display: flex;
-  flex-direction: column;
-}
-
-/* Labels */
-.input-group label {
-  font-size: 3rem;
-  color: #2E2E2E;
-  margin-bottom: 2vh;
-}
-
-/* Campos de texto, número, data e select */
-.adicionar-pet form input[type="text"],
-.adicionar-pet form input[type="number"],
-.adicionar-pet form input[type="date"],
-.adicionar-pet form select {
-  background: transparent;              /* fundo invisível */
-  border: none;                         /* sem bordas laterais */
-  border-bottom: 2px solid #ff7b00;     /* linha inferior laranja */
-  padding: 8px 4px;
-  font-size: 3rem;
-  color: #333;
-  outline: none;
-  transition: border-color 0.3s, color 0.3s;
-}
-
-/* Efeito ao focar */
-.adicionar-pet form input:focus,
-.adicionar-pet form select:focus {
-  border-bottom-color: #ff9e3d;
-  color: #000;
-}
-
-/* Upload de foto */
-.foto-upload input[type="file"] {
-  border: none;
-  padding: 5px 0;
-  font-size: 3rem;
-  color: #555;
-  background: transparent;
-  margin-bottom: 4vh;
-}
-
-/* Botão principal */
-.adicionar-pet form button {
-  background-color: #ff7b00;
+.bottom-nav a:hover {
+  background-color: #E87C1E;
   color: white;
-  border: none;
-  padding: 12px;
-  border-radius: 10px;
-  font-size: 3rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.3s, transform 0.2s;
+  border-radius: 5px;
 }
 
-.adicionar-pet form button:hover {
-  background-color: #ff9e3d;
-  transform: scale(1.03);
+.bottom-nav a i {
+  font-size: 1.2rem;
+  margin-bottom: 2px;
 }
 
+/* Evita que a barra sobreponha conteúdo */
+body {
+  padding-bottom: 65px; /* um pouco maior que a altura da nav */
+}
+
+/* Responsividade */
+@media (max-width: 500px) {
+  .bottom-nav a {
+    font-size: 0.75rem;
+  }
+  .bottom-nav a i {
+    font-size: 1rem;
+  }
+}

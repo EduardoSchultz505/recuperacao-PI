@@ -18,15 +18,19 @@ async function loadPets() {
 
 async function addPet(e) {
   e.preventDefault();
-  const formData = Object.fromEntries(new FormData(e.target).entries());
-  await fetch(API_URL, {
+
+  const form = e.target;
+  const formData = new FormData(form); // usar FormData para enviar arquivo
+
+  await fetch("http://127.0.0.1:5000/pets", {
     method: "POST",
-    headers: {"Content-Type": "application/json"},
-    body: JSON.stringify(formData)
+    body: formData // enviar como multipart/form-data
   });
+
   alert("Pet adicionado!");
   window.location.href = "pet_list.html";
 }
+
 
 async function deletePet(id) {
   if (confirm("Deseja deletar este pet?")) {

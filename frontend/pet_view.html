@@ -1,42 +1,225 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
-  <meta charset="UTF-8">
-  <title>PetCard - Ver Pet</title>
+  <meta charset="UTF-8" />
+  <title>Detalhes do Pet - PetCard</title>
+  <link rel="stylesheet" href="pet_view.css" />
   <link rel="stylesheet" href="style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 </head>
+
 <body>
-  <h1>🐾 PetCard</h1>
-  <div id="petInfo"></div>
 
-  <button onclick="window.location.href='pet_list.html'">Voltar</button>
-  <button id="editBtn">Editar</button>
+  <main class="pet-container">
+    <section class="pet-info">
+      <button id="config-btn" class="config-btn">⚙️</button>
+      <img id="pet-foto" src="" alt="Foto do Pet" />
+      <h2 id="pet-nome"></h2>
+      <ul>
+        <li><b>Raça:</b> <span id="pet-raca"></span></li>
+        <li><b>Gênero:</b> <span id="pet-genero"></span></li>
+        <li><b>Idade:</b> <span id="pet-idade"></span> anos</li>
+        <li><b>Cor:</b> <span id="pet-cor"></span></li>
+      </ul>
+    </section>
 
-  <script src="script.js"></script>
+    <section id="edit-section" class="hidden">
+      <h3>Editar Pet</h3>
+      <form id="edit-pet-form" enctype="multipart/form-data">
+        <label for="nome">Nome</label>
+        <input type="text" id="nome" name="nome" required />
+
+        <label for="idade">Idade (anos)</label>
+        <input type="number" id="idade" name="idade" min="0" max="30" required />
+
+        <label for="genero">Gênero</label>
+        <select id="genero" name="genero" required>
+          <option value="macho">Macho</option>
+          <option value="fêmea">Fêmea</option>
+        </select>
+
+        <label for="raca">Raça</label>
+        <input type="text" id="raca" name="raca" />
+
+        <label for="cor">Cor</label>
+        <input type="text" id="cor" name="cor" />
+
+        <label for="foto">Foto (opcional)</label>
+        <input type="file" id="foto" name="foto" accept="image/*" />
+
+        <button type="submit">Salvar</button>
+        <button type="button" id="cancel-btn">Cancelar</button>
+      </form>
+    </section>
+
+    <div class="event-form-container">
+      <h3>Adicionar Evento</h3>
+      <form id="event-form">
+        <div class="input-group">
+          <label for="nome">Nome do Evento *</label>
+          <input type="text" id="nome" name="nome" required>
+        </div>
+        <div class="input-group">
+          <label for="data">Data *</label>
+          <input type="date" id="data" name="data" required>
+        </div>
+        <div class="input-group">
+          <label for="descricao">Descrição</label>
+          <textarea id="descricao" name="descricao"></textarea>
+        </div>
+        <button type="submit">Cadastrar Evento</button>
+      </form>
+    </div>
+
+    <ul id="event-list"></ul>
+  </main>
+
+  <nav class="bottom-nav">
+    <a href="pet_list.html">
+      <i>🐾</i>
+      <span>Pets</span>
+    </a>
+    <a href="add_pet.html">
+      <i>➕</i>
+      <span>Cadastrar</span>
+    </a>
+    <a href="profile.html">
+      <i>👤</i>
+      <span>Perfil</span>
+    </a>
+  </nav>
+
   <script>
+    const API_URL = 'http://127.0.0.1:5000/pets';
     const params = new URLSearchParams(window.location.search);
-    const id = params.get("id");
+    const petId = params.get('id');
 
+    const petFoto = document.getElementById('pet-foto');
+    const petNome = document.getElementById('pet-nome');
+    const petRaca = document.getElementById('pet-raca');
+    const petGenero = document.getElementById('pet-genero');
+    const petIdade = document.getElementById('pet-idade');
+    const petCor = document.getElementById('pet-cor');
+
+    const configBtn = document.getElementById('config-btn');
+    const editSection = document.getElementById('edit-section');
+    const editForm = document.getElementById('edit-pet-form');
+    const cancelBtn = document.getElementById('cancel-btn');
+
+    const eventForm = document.getElementById('event-form');
+    const eventList = document.getElementById('event-list');
+
+    // ------------------- Função para carregar os dados do pet -------------------
     async function loadPet() {
-      const res = await fetch("http://127.0.0.1:5000/pets");
-      const pets = await res.json();
-      const pet = pets.find(p => p.id == id);
+      try {
+        const res = await fetch(`${API_URL}/${petId}`);
+        if (!res.ok) throw new Error('Pet não encontrado.');
+        const pet = await res.json();
 
-      if (pet) {
-        document.getElementById("petInfo").innerHTML = `
-          <h2>${pet.nome}</h2>
-          <p><b>Raça:</b> ${pet.raca}</p>
-          <p><b>Gênero:</b> ${pet.genero}</p>
-          <p><b>Idade:</b> ${pet.idade}</p>
-          <p><b>Cor:</b> ${pet.cor}</p>
-        `;
-        document.getElementById("editBtn").onclick = () => {
-          window.location.href = "edit_pet.html?id=" + pet.id;
-        };
+        petFoto.src = pet.foto ? `${API_URL.replace('/pets', '')}/uploads/${pet.foto}` : 'https://via.placeholder.com/150?text=Sem+Foto';
+        petNome.textContent = pet.nome;
+        petRaca.textContent = pet.raca || '-';
+        petGenero.textContent = pet.genero || '-';
+        petIdade.textContent = pet.idade || '-';
+        petCor.textContent = pet.cor || '-';
+
+        // Preencher formulário
+        editForm.nome.value = pet.nome;
+        editForm.idade.value = pet.idade;
+        editForm.genero.value = pet.genero;
+        editForm.raca.value = pet.raca;
+        editForm.cor.value = pet.cor;
+      } catch (err) {
+        alert(err.message);
       }
     }
 
+    // ------------------- Função para carregar eventos -------------------
+    async function loadEvents() {
+      const res = await fetch(`${API_URL}/${petId}/events`);
+      const events = await res.json();
+      eventList.innerHTML = events.map(e => `
+      <li>
+        <b>${e.nome}</b> - ${e.data}<br>
+        ${e.descricao || ''}
+        <button class="delete-event" data-id="${e.id}">Excluir</button>
+      </li>
+    `).join('');
+
+      // Adicionar listener para deletar eventos
+      document.querySelectorAll('.delete-event').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const eventId = btn.dataset.id;
+          if (confirm('Deseja deletar este evento?')) {
+            await fetch(`http://127.0.0.1:5000/events/${eventId}`, { method: 'DELETE' });
+            loadEvents(); // Recarregar eventos
+          }
+        });
+      });
+    }
+
+    // ------------------- Mostrar / esconder formulário de edição -------------------
+    configBtn.addEventListener('click', () => {
+      editSection.classList.toggle('hidden');
+    });
+
+    // Cancelar edição
+    cancelBtn.addEventListener('click', () => {
+      editSection.classList.add('hidden');
+    });
+
+    // Enviar edição
+    editForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData(editForm);
+
+      try {
+        const res = await fetch(`${API_URL}/${petId}`, {
+          method: 'PUT',
+          body: formData
+        });
+        if (!res.ok) throw new Error('Erro ao atualizar pet.');
+
+        alert('Pet atualizado com sucesso!');
+        editSection.classList.add('hidden');
+        loadPet(); // Recarregar os dados
+      } catch (err) {
+        alert(err.message);
+      }
+    });
+
+    // ------------------- Cadastrar evento -------------------
+    eventForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = Object.fromEntries(new FormData(eventForm).entries());
+
+      if (!formData.nome || !formData.data) {
+        alert('Nome e data do evento são obrigatórios!');
+        return;
+      }
+
+      try {
+        const res = await fetch(`${API_URL}/${petId}/events`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData)
+        });
+        if (!res.ok) throw new Error('Erro ao criar evento.');
+
+        eventForm.reset();
+        loadEvents(); // Recarregar eventos
+      } catch (err) {
+        alert(err.message);
+      }
+    });
+
+    // ------------------- Inicializar -------------------
     loadPet();
+    loadEvents();
   </script>
+
+
 </body>
+
 </html>

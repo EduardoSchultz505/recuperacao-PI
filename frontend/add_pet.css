@@ -1,0 +1,114 @@
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #FFA94D;
+  color: #3c2c0f;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+}
+
+.add-pet-container {
+  background: #fff3e6;
+  border-radius: 20px;
+  padding: 30px 25px;
+  margin: 40px 15px;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 25px;
+  color: #bf360c;
+  font-weight: 700;
+  font-size: 2.2rem;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  font-weight: 600;
+  margin-bottom: 6px;
+  font-size: 1.1rem;
+  color: #bf360c;
+}
+
+input[type="text"],
+input[type="number"],
+select,
+input[type="file"] {
+  padding: 10px 15px;
+  font-size: 1rem;
+  border: 2px solid #ff7b00;
+  border-radius: 10px;
+  background-color: #fff;
+  color: #3c2c0f;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+select:focus,
+input[type="file"]:focus {
+  border-color: #e87c1e;
+}
+
+select {
+  appearance: none;
+  cursor: pointer;
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 6L11 1' stroke='%23bf360c' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 15px center;
+  background-size: 12px 8px;
+  padding-right: 40px;
+}
+
+button[type="submit"] {
+  background-color: #E87C1E;
+  border: none;
+  color: #2E2E2E;
+  font-size: 1.3rem;
+  font-weight: 700;
+  padding: 14px;
+  border-radius: 15px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button[type="submit"]:hover {
+  background-color: #ff9e3d;
+}
+
+.foto-upload input[type="file"] {
+  padding: 6px 10px;
+  font-size: 1rem;
+  background-color: #fff;
+  border-radius: 10px;
+  border: 2px solid #ff7b00;
+  cursor: pointer;
+}
+
+@media (max-width: 480px) {
+  .add-pet-container {
+    margin: 30px 10px;
+    padding: 25px 15px;
+  }
+
+  h2 {
+    font-size: 1.8rem;
+  }
+}
