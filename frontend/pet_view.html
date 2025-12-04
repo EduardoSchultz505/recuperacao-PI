@@ -84,10 +84,6 @@
       <i>➕</i>
       <span>Cadastrar</span>
     </a>
-    <a href="profile.html">
-      <i>👤</i>
-      <span>Perfil</span>
-    </a>
   </nav>
 
   <script>
@@ -110,7 +106,6 @@
     const eventForm = document.getElementById('event-form');
     const eventList = document.getElementById('event-list');
 
-    // ------------------- Função para carregar os dados do pet -------------------
     async function loadPet() {
       try {
         const res = await fetch(`${API_URL}/${petId}`);
@@ -124,7 +119,6 @@
         petIdade.textContent = pet.idade || '-';
         petCor.textContent = pet.cor || '-';
 
-        // Preencher formulário
         editForm.nome.value = pet.nome;
         editForm.idade.value = pet.idade;
         editForm.genero.value = pet.genero;
@@ -135,7 +129,6 @@
       }
     }
 
-    // ------------------- Função para carregar eventos -------------------
     async function loadEvents() {
       const res = await fetch(`${API_URL}/${petId}/events`);
       const events = await res.json();
@@ -146,30 +139,26 @@
         <button class="delete-event" data-id="${e.id}">Excluir</button>
       </li>
     `).join('');
-
-      // Adicionar listener para deletar eventos
       document.querySelectorAll('.delete-event').forEach(btn => {
         btn.addEventListener('click', async () => {
           const eventId = btn.dataset.id;
           if (confirm('Deseja deletar este evento?')) {
             await fetch(`http://127.0.0.1:5000/events/${eventId}`, { method: 'DELETE' });
-            loadEvents(); // Recarregar eventos
+            loadEvents();
           }
         });
       });
     }
 
-    // ------------------- Mostrar / esconder formulário de edição -------------------
+
     configBtn.addEventListener('click', () => {
       editSection.classList.toggle('hidden');
     });
 
-    // Cancelar edição
     cancelBtn.addEventListener('click', () => {
       editSection.classList.add('hidden');
     });
 
-    // Enviar edição
     editForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const formData = new FormData(editForm);
@@ -183,13 +172,12 @@
 
         alert('Pet atualizado com sucesso!');
         editSection.classList.add('hidden');
-        loadPet(); // Recarregar os dados
+        loadPet();
       } catch (err) {
         alert(err.message);
       }
     });
 
-    // ------------------- Cadastrar evento -------------------
     eventForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const formData = Object.fromEntries(new FormData(eventForm).entries());
@@ -208,13 +196,12 @@
         if (!res.ok) throw new Error('Erro ao criar evento.');
 
         eventForm.reset();
-        loadEvents(); // Recarregar eventos
+        loadEvents();
       } catch (err) {
         alert(err.message);
       }
     });
 
-    // ------------------- Inicializar -------------------
     loadPet();
     loadEvents();
   </script>

@@ -9,17 +9,6 @@ body {
   align-items: flex-start;
   min-height: 100vh;
 }
-
-.add-pet-container {
-  background: #fff3e6;
-  border-radius: 20px;
-  padding: 30px 25px;
-  margin: 40px 15px;
-  width: 100%;
-  max-width: 420px;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-}
-
 h2 {
   text-align: center;
   margin-bottom: 25px;

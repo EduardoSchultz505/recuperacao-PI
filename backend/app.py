@@ -122,7 +122,6 @@ def get_pets():
     return jsonify([p.to_dict() for p in pets])
 
 @app.route('/pets', methods=['POST'])
-@login_required
 def create_pet():
     nome = request.form.get('nome')
     idade = request.form.get('idade')
@@ -148,7 +147,6 @@ def get_pet(pet_id):
     return jsonify(pet.to_dict())
 
 @app.route('/pets/<int:pet_id>', methods=['PUT'])
-@login_required
 def update_pet(pet_id):
     pet = Pet.query.get_or_404(pet_id)
     data = request.form or request.json
@@ -166,24 +164,21 @@ def update_pet(pet_id):
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], pet.foto))
 
     db.session.commit()
-    return jsonify({'message': 'Pet atualizado com sucesso!'})
+    return jsonify({'message': 'Pet atualizado com sucesso!'}), 200
 
 @app.route('/pets/<int:pet_id>', methods=['DELETE'])
-@login_required
 def delete_pet(pet_id):
     pet = Pet.query.get_or_404(pet_id)
     db.session.delete(pet)
     db.session.commit()
-    return jsonify({'message': 'Pet deletado com sucesso!'})
+    return jsonify({'message': 'Pet deletado com sucesso!'}), 200
 
-# --- ROTAS DE EVENTOS ---
 @app.route('/pets/<int:pet_id>/events', methods=['GET'])
 def get_events(pet_id):
     pet = Pet.query.get_or_404(pet_id)
     return jsonify([e.to_dict() for e in pet.events])
 
 @app.route('/pets/<int:pet_id>/events', methods=['POST'])
-@login_required
 def create_event(pet_id):
     pet = Pet.query.get_or_404(pet_id)
     data = request.form or request.json
@@ -201,13 +196,18 @@ def create_event(pet_id):
     return jsonify({"message": "Evento criado com sucesso!"}), 201
 
 @app.route('/events/<int:event_id>', methods=['DELETE'])
-@login_required
 def delete_event(event_id):
-    event = Event.query.get_or_404(event_id)
+    event = Pet.query.session.query(Event).get_or_404(event_id)
     db.session.delete(event)
     db.session.commit()
-    return jsonify({"message": "Evento deletado com sucesso!"})
+    return jsonify({"message": "Evento deletado com sucesso!"}), 200
 
-# --- RUN APP ---
+@app.route('/session', methods=['GET'])
+def check_session():
+    if current_user.is_authenticated:
+        return jsonify({"authenticated": True, "user": current_user.email}), 200
+    return jsonify({"authenticated": False}), 401
+
+
 if __name__ == "__main__":
     app.run(debug=True)

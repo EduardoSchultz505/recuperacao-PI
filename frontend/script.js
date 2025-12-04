@@ -20,11 +20,11 @@ async function addPet(e) {
   e.preventDefault();
 
   const form = e.target;
-  const formData = new FormData(form); // usar FormData para enviar arquivo
+  const formData = new FormData(form);
 
   await fetch("http://127.0.0.1:5000/pets", {
     method: "POST",
-    body: formData // enviar como multipart/form-data
+    body: formData
   });
 
   alert("Pet adicionado!");

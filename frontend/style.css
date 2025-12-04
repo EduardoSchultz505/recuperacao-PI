@@ -36,12 +36,10 @@
   margin-bottom: 2px;
 }
 
-/* Evita que a barra sobreponha conteúdo */
 body {
-  padding-bottom: 65px; /* um pouco maior que a altura da nav */
+  padding-bottom: 65px;
 }
 
-/* Responsividade */
 @media (max-width: 500px) {
   .bottom-nav a {
     font-size: 0.75rem;
