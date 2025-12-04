@@ -7,6 +7,9 @@
   <link rel="stylesheet" href="pet_view.css" />
   <link rel="stylesheet" href="style.css">
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    .hidden { display: none; }
+  </style>
 </head>
 
 <body>
@@ -14,7 +17,7 @@
   <main class="pet-container">
     <section class="pet-info">
       <button id="config-btn" class="config-btn">⚙️</button>
-      <img id="pet-foto" src="" alt="Foto do Pet" />
+      <img id="pet-foto" src="./assets/no-image.webp" alt="Foto do Pet" />
       <h2 id="pet-nome"></h2>
       <ul>
         <li><b>Raça:</b> <span id="pet-raca"></span></li>
@@ -57,8 +60,19 @@
       <h3>Adicionar Evento</h3>
       <form id="event-form">
         <div class="input-group">
-          <label for="nome">Nome do Evento *</label>
-          <input type="text" id="nome" name="nome" required>
+          <label for="nome-evento">Nome do Evento *</label>
+          <select id="nome-evento" name="nome-evento" required>
+            <option value=""> Selecione </option>
+            <option value="V10">V10</option>
+            <option value="V8">V8</option>
+            <option value="Raiva">Raiva</option>
+            <option value="Antirrábica">Antirrábica</option>
+            <option value="Leucemia Felina">Leucemia Felina</option>
+            <option value="Vermifugo">Vermífugo</option>
+            <option value="Outro">Outro</option>
+          </select>
+
+          <input type="text" id="nome-outro" name="nome-outro" placeholder="Digite outro evento" class="hidden" />
         </div>
         <div class="input-group">
           <label for="data">Data *</label>
@@ -72,141 +86,29 @@
       </form>
     </div>
 
+    <h3>Eventos</h3>
     <ul id="event-list"></ul>
+
+    <div class="event-form-container">
+      <h3>Vacinas</h3>
+      <ul id="vacina-list"></ul>
+
+      <h3>Vermífugo</h3>
+      <ul id="vermifugo-list"></ul>
+    </div>
   </main>
 
   <nav class="bottom-nav">
     <a href="pet_list.html">
-      <i>🐾</i>
+      <img src="./assets/icon/1000074045.png" style="width: 30px;">
       <span>Pets</span>
     </a>
     <a href="add_pet.html">
-      <i>➕</i>
-      <span>Cadastrar</span>
+      <img src="./assets/icon/sqimg_37750798.png" style="width: 30px;">
+      <span>Adicionar</span>
     </a>
   </nav>
 
-  <script>
-    const API_URL = 'http://127.0.0.1:5000/pets';
-    const params = new URLSearchParams(window.location.search);
-    const petId = params.get('id');
-
-    const petFoto = document.getElementById('pet-foto');
-    const petNome = document.getElementById('pet-nome');
-    const petRaca = document.getElementById('pet-raca');
-    const petGenero = document.getElementById('pet-genero');
-    const petIdade = document.getElementById('pet-idade');
-    const petCor = document.getElementById('pet-cor');
-
-    const configBtn = document.getElementById('config-btn');
-    const editSection = document.getElementById('edit-section');
-    const editForm = document.getElementById('edit-pet-form');
-    const cancelBtn = document.getElementById('cancel-btn');
-
-    const eventForm = document.getElementById('event-form');
-    const eventList = document.getElementById('event-list');
-
-    async function loadPet() {
-      try {
-        const res = await fetch(`${API_URL}/${petId}`);
-        if (!res.ok) throw new Error('Pet não encontrado.');
-        const pet = await res.json();
-
-        petFoto.src = pet.foto ? `${API_URL.replace('/pets', '')}/uploads/${pet.foto}` : 'https://via.placeholder.com/150?text=Sem+Foto';
-        petNome.textContent = pet.nome;
-        petRaca.textContent = pet.raca || '-';
-        petGenero.textContent = pet.genero || '-';
-        petIdade.textContent = pet.idade || '-';
-        petCor.textContent = pet.cor || '-';
-
-        editForm.nome.value = pet.nome;
-        editForm.idade.value = pet.idade;
-        editForm.genero.value = pet.genero;
-        editForm.raca.value = pet.raca;
-        editForm.cor.value = pet.cor;
-      } catch (err) {
-        alert(err.message);
-      }
-    }
-
-    async function loadEvents() {
-      const res = await fetch(`${API_URL}/${petId}/events`);
-      const events = await res.json();
-      eventList.innerHTML = events.map(e => `
-      <li>
-        <b>${e.nome}</b> - ${e.data}<br>
-        ${e.descricao || ''}
-        <button class="delete-event" data-id="${e.id}">Excluir</button>
-      </li>
-    `).join('');
-      document.querySelectorAll('.delete-event').forEach(btn => {
-        btn.addEventListener('click', async () => {
-          const eventId = btn.dataset.id;
-          if (confirm('Deseja deletar este evento?')) {
-            await fetch(`http://127.0.0.1:5000/events/${eventId}`, { method: 'DELETE' });
-            loadEvents();
-          }
-        });
-      });
-    }
-
-
-    configBtn.addEventListener('click', () => {
-      editSection.classList.toggle('hidden');
-    });
-
-    cancelBtn.addEventListener('click', () => {
-      editSection.classList.add('hidden');
-    });
-
-    editForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const formData = new FormData(editForm);
-
-      try {
-        const res = await fetch(`${API_URL}/${petId}`, {
-          method: 'PUT',
-          body: formData
-        });
-        if (!res.ok) throw new Error('Erro ao atualizar pet.');
-
-        alert('Pet atualizado com sucesso!');
-        editSection.classList.add('hidden');
-        loadPet();
-      } catch (err) {
-        alert(err.message);
-      }
-    });
-
-    eventForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const formData = Object.fromEntries(new FormData(eventForm).entries());
-
-      if (!formData.nome || !formData.data) {
-        alert('Nome e data do evento são obrigatórios!');
-        return;
-      }
-
-      try {
-        const res = await fetch(`${API_URL}/${petId}/events`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(formData)
-        });
-        if (!res.ok) throw new Error('Erro ao criar evento.');
-
-        eventForm.reset();
-        loadEvents();
-      } catch (err) {
-        alert(err.message);
-      }
-    });
-
-    loadPet();
-    loadEvents();
-  </script>
-
-
+  <script src="pet_view.js"></script>
 </body>
-
 </html>

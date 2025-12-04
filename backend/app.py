@@ -1,7 +1,6 @@
 from flask import Flask, request, jsonify, send_from_directory
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
-from flask_login import LoginManager, login_user, logout_user, login_required, current_user, UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
 
@@ -19,16 +18,6 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 db = SQLAlchemy(app)
 CORS(app, resources={r"/*": {"origins": "*"}})
-
-login_manager = LoginManager()
-login_manager.init_app(app)
-
-# --- MODELS ---
-class User(db.Model, UserMixin):
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), unique=True, nullable=False)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-    password = db.Column(db.String(200), nullable=False)
 
 class Pet(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -67,48 +56,10 @@ class Event(db.Model):
             "pet_id": self.pet_id
         }
 
-# --- LOGIN MANAGER ---
-@login_manager.user_loader
-def load_user(user_id):
-    return User.query.get(int(user_id))
-
 # --- CRIAR BANCO ---
 with app.app_context():
     db.create_all()
 
-# --- ROTAS DE USUÁRIO ---
-@app.route('/register', methods=['POST'])
-def register():
-    data = request.json
-    if not data.get('username') or not data.get('email') or not data.get('password'):
-        return jsonify({"error": "Todos os campos são obrigatórios"}), 400
-    
-    if User.query.filter_by(email=data['email']).first():
-        return jsonify({"error": "Email já cadastrado"}), 400
-
-    user = User(
-        username=data['username'],
-        email=data['email'],
-        password=generate_password_hash(data['password'])
-    )
-    db.session.add(user)
-    db.session.commit()
-    return jsonify({"message": "Usuário cadastrado com sucesso!"}), 201
-
-@app.route('/login', methods=['POST'])
-def login():
-    data = request.json
-    user = User.query.filter_by(email=data.get('email')).first()
-    if user and check_password_hash(user.password, data.get('password')):
-        login_user(user)
-        return jsonify({"message": "Login realizado com sucesso!"})
-    return jsonify({"error": "Email ou senha inválidos"}), 401
-
-@app.route('/logout', methods=['POST'])
-@login_required
-def logout():
-    logout_user()
-    return jsonify({"message": "Logout realizado com sucesso!"})
 
 # --- ROTAS DE UPLOAD ---
 @app.route('/uploads/<filename>')
@@ -201,12 +152,6 @@ def delete_event(event_id):
     db.session.delete(event)
     db.session.commit()
     return jsonify({"message": "Evento deletado com sucesso!"}), 200
-
-@app.route('/session', methods=['GET'])
-def check_session():
-    if current_user.is_authenticated:
-        return jsonify({"authenticated": True, "user": current_user.email}), 200
-    return jsonify({"authenticated": False}), 401
 
 
 if __name__ == "__main__":
